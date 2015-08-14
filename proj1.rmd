@@ -1,0 +1,44 @@
+---
+title: "Regression Model Project"
+author: "Hashdevrunner"
+output: html_document
+---
+
+##Executive Summary
+
+##Data Exploration
+Exploring the `mtcars` dataset with the most intuitive variables is the first step in achieving good analysis points. We prepare the variables in to categorical and continuous data.
+
+```{r eval=FALSE}
+data(mtcars); attach(mtcars)
+
+#categorize the following variables Cylinder,Transmission
+mtcars$cyl <- as.factor(cyl)
+mtcars$am <- factor(am, labels = c("Automatic","Manual"))
+mtcars$gear <- as.factor(gear)
+mtcars$carb <- as.factor(carb)
+mtcars$vs <- as.factor(vs) #what is this variable?
+```
+
+Exploring the mpg vs variables that can be intuitively guess resulted into identifiable patterns.
+```{r echo=FALSE}
+pairs(mpg ~ wt + disp + hp, 
+      upper.panel = panel.smooth, data=mtcars)
+```
+
+
+The first intuitive variable we can explore is the MPG vs weight scatterplot.  There is a strong correlation that as the car gets heavier there is a decrease in mileage efficiency.
+
+```{r echo=FALSE}
+library(ggplot2)
+#plot mpg vs wt
+g1 <- ggplot(data = mtcars, aes(y = mpg, x = wt)) +
+  ggtitle("mpg vs wt plot") +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  facet_grid(. ~ am, scales = "free")
+print(g1)
+```
+
+Another strong relationship shown 
+

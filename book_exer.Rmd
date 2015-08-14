@@ -1,0 +1,64 @@
+---
+title: "book exercises"
+output: html_document
+---
+
+Exercises - 5
+
+###------
+1. Fit a linear regression model to the `father.son` dataset with the father as the predictor and the son as the outcome. Give a p-value for the slope coefficient and perform the relevant hypothesis test. [Watch a video solution](https://www.youtube.com/watch?v=LxA2x2VvPWo&index=19&list=PLpl-gQkQivXji7JK1OP1qS7zalwUBPrX0).
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+data(father.son)
+model <- lm(sheight ~ fheight, data = father.son)
+summary(model)$coef
+```
+
+The p-value almost 0 rejects the null hypothesis. It leads to accept the alternate hypothesis that average slope not 0. Ha <> 0
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library(ggplot2)
+
+g <- ggplot(data=father.son, aes(x=fheight, y=sheight)) +
+  geom_point(size = 2, alpha=0.2) +
+  geom_smooth(method="lm", color="red")
+print(g)
+```
+
+###------
+2. Refer to question 1. Interpret both parameters. Recenter for the intercept if necessary. [Watch a video solution](https://www.youtube.com/watch?v=YtXTK9ztE00&index=20&list=PLpl-gQkQivXji7JK1OP1qS7zalwUBPrX0).
+
+A 0-height of the father doesn't make sense in using the intercept. Adjusting the intercept and center to the mean height of the father would be more meaningful.
+```{r message=FALSE, warning=FALSE}
+fheight.c <- father.son$fheight - mean(father.son$fheight)
+new_dt <- data.frame(sheight=father.son$sheight,
+                     fheight=fheight.c)
+model2 <- lm(sheight~fheight, data=new_dt)
+summary(model2)$coef
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library(ggplot2)
+g <- ggplot(data=new_dt, aes(x=fheight, y=sheight)) +
+  geom_point(size = 2, alpha=0.2) +
+  geom_smooth(method="lm", color="red")
+print(g)
+```
+
+```{r}
+model3 <- lm(sheight ~ I(fheight-mean(fheight)),data=father.son)
+summary(model3)$coef
+```
+
+###------
+3. Refer to question 1. Predict the son’s height if the father’s height is 80 inches. Would you recommend this prediction? Why or why not? Watch a video solution.
+
+
+
+###------
+4. Load the mtcars dataset. Fit a linear regression with miles per gallon as the outcome and horsepower as the predictor. Interpret your coefficients, recenter for the intercept if necessary. Watch a video solution.
+
+5. Refer to question 4. Overlay the fit onto a scatterplot. Watch a video solution.
+Refer to question 4. Test the hypothesis of no linear relationship between horsepower and miles per gallon. Watch a video solution.
+
+6. Refer to question 4. Predict the miles per gallon for a horsepower of 111. Watch a video solution.
