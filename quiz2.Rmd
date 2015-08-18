@@ -29,13 +29,29 @@ summary(fit)$sigma
 
 ```{r}
 data(mtcars)
-fit <- lm(mpg~wt, mtcars)
+fit <- lm(mpg ~ I(wt-mean(wt)), mtcars)
+sumCoef <- summary(fit)$coefficients
+range <- sumCoef[1,1] + c(-1,1) * qt(.975, df = fit$df) * sumCoef[1,2]
+range
+
 library(ggplot2)
-g <- ggplot(mtcars, aes(x=wt, y=mpg)) +
-  geom_point() +
-  geom_abline(slope = coef(fit)["wt"],
-              intercept = coef(fit)["(Intercept)"],
-              color='BLUE') +
-  stat_smooth(method = "lm", alpha = 0.2)
+g <- ggplot(data=mtcars, aes(x = wt, y = mpg)) +
+  geom_point(size = 2, alpha = 0.2, colour = "red") + 
+  geom_smooth(method = "lm", colour = "blue")
 print(g)
+
+newData <- c(mean(mtcars$wt))
+range <- predict(fit, data.frame(wt=newData),interval="confidence")
+range
 ```
+
+#####4.Refer to the previous question. Read the help file for `mtcars`. What is the weight coefficient interpreted as?
+The estimated expected change in mpg per 1000 lb increase in weight.
+
+#####5. Consider again the `mtcars` data set and a linear regression model with mpg as predicted by weight (1,000 lbs). A new car is coming weighing 3000 pounds. Construct a 95% prediction interval for its mpg. What is the upper endpoint?
+```{r}
+newData <- c(3)
+fit <- lm(mpg ~ wt, mtcars)
+range <- predict(fit, data.frame(wt=newData), interval="prediction")
+range
+``` 
