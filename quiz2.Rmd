@@ -40,6 +40,7 @@ g <- ggplot(data=mtcars, aes(x = wt, y = mpg)) +
   geom_smooth(method = "lm", colour = "blue")
 print(g)
 
+#alternate
 newData <- c(mean(mtcars$wt))
 range <- predict(fit, data.frame(wt=newData),interval="confidence")
 range
@@ -52,6 +53,21 @@ The estimated expected change in mpg per 1000 lb increase in weight.
 ```{r}
 newData <- c(3)
 fit <- lm(mpg ~ wt, mtcars)
+
 range <- predict(fit, data.frame(wt=newData), interval="prediction")
 range
-``` 
+```
+
+#####6. Consider again the `mtcars` data set and a linear regression model with mpg as predicted by weight (in 1,000 lbs). A “short” ton is defined as 2,000 lbs. Construct a 95% confidence interval for the expected change in mpg per 1 short ton increase in weight. Give the lower endpoint.
+
+```{r}
+fit <- lm(mpg ~ I(wt / 2), mtcars)
+mean <- summary(fit)$coefficients[2,1]
+se <- summary(fit)$coefficients[2,2]
+df <- summary(fit)$df
+
+#two sided T-test
+range <- mean + c(-1,1) * qt(.975, df=df) * se
+range
+```
+
